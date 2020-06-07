@@ -1,0 +1,17 @@
+__pycache__
+*.pyc
+*.swp
+.coverage
+env/
+venv/
+covhtml/
+.vscode
+.idea
+.pytest_cache
+1.out
+.tox
+.history/*
+.DS_Store
+config/cache/*.json
+CMQ_python_sdk.log
+superconf.json
