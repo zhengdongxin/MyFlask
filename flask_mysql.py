@@ -1,7 +1,11 @@
-""" 本文件存储DB的连接， 基础的表定义 """
+# -*- coding:utf-8 -*-
+import random
+import tables_config
+from datetime import datetime
+
 import os
-import threading
 import pymysql
+import threading
 from flask import current_app
 
 MDBN = 'dev'
@@ -12,11 +16,11 @@ def get_db(prefix=''):
     db_conn = 'db_conn' if not prefix else '-'.join([prefix, 'db_conn'])
     if not hasattr(THREAD_LOCAL, db_conn):
         connect_config = {
-            "host": current_app.config['MYSQL_HOST' if not prefix else '_'.join([prefix, 'MYSQL_HOST'])],
-            "port": current_app.config['MYSQL_PORT' if not prefix else '_'.join([prefix, 'MYSQL_PORT'])],
-            "user": current_app.config['MYSQL_USER' if not prefix else '_'.join([prefix, 'MYSQL_USER'])],
-            "passwd": current_app.config['MYSQL_PASSWORD' if not prefix else '_'.join([prefix, 'MYSQL_PASSWORD'])],
-            "db": current_app.config['MYSQL_DB' if not prefix else '_'.join([prefix, 'MYSQL_DB'])],
+            "host": current_app.config['MYSQL_HOST'],
+            "port": current_app.config['MYSQL_PORT'],
+            "user": current_app.config['MYSQL_USER'],
+            "passwd": current_app.config['MYSQL_PASSWORD'],
+            "db": current_app.config['MYSQL_DB'],
             "charset": current_app.config['MYSQL_CHARSET'],
             #"autocommit": True
         }
@@ -29,17 +33,12 @@ def get_db(prefix=''):
     return getattr(THREAD_LOCAL, db_conn)
 
 
-# -*- coding:utf-8 -*-
-from datetime import datetime
-import random
-import tables_config
-
-
 def create_database(dbname=MDBN):
     conn = get_db()
     cur = conn.cursor()
     cur.execute('CREATE DATABASE IF NOT EXISTS %s' % dbname)
     conn.commit()
+
 
 def create_table():
     conn = get_db()
@@ -107,7 +106,6 @@ class DatabaseTable():
 
 
     def add(self, args):
-        pkey    = self.pkey
         columns = self.columns
         tbname  = self.table_name
         cur     = self.cursor
@@ -152,7 +150,7 @@ class DatabaseTable():
             tbname, pkey), (args['i'], ))
         return cur.rowcount
 
-    def post(self, args):
+    def update(self, args):
         cur = self.cursor
         pkey = self.pkey
         columns = self.columns
@@ -169,11 +167,9 @@ class DatabaseTable():
             tbname, ','.join(set_columns), pkey), set_data)
         return cur.rowcount
 
-    def postmany(self, args):
+    def updatemany(self, args):
         cur = self.cursor
-        pkey = self.pkey
         columns = self.columns
-        fields = args.get('fields', columns)
         tbname = self.table_name
         or_str = ''
         or_list = []
@@ -324,7 +320,7 @@ ALTER TABLE {0} DROP COLUMN {1};'''.format(tbname, column))
         cur.execute('''DROP TABLE IF EXISTS {0};'''.format(tbname))
         return
 
-    def create_number(self, id_, width=12, prefix='', suffix='',
+    def create_code(self, id_, width=12, prefix='', suffix='',
                     insert_date=False):
         id_len = len(str(id_))
         random_len = width-id_len-len(str(id_len))-len(prefix)-len(suffix)

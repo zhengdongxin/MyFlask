@@ -27,7 +27,9 @@ def create_app():
 def before_request():
     request.return_success = return_success
     request.return_error = return_error
+    request.check_args = check_args
 
+    # get_mysql_conn()
     mysql_conn = get_db()
     request.mysql_conn = mysql_conn
     request.mysql_cursor = mysql_conn.cursor()
@@ -36,20 +38,30 @@ def before_request():
     #create_table()
 
 
+# TODO 默认不创建sql连接
+def get_mysql_conn():
+    pass
+
+
+# TODO 校验参数
+def check_args():
+    '''
+        result = True or False
+        if not result:
+            return_error(400, '参数错误')
+        return result
+    '''
+    pass
 
 def return_success(data='success'):
     res = json.dumps({'code': 0, 'msg': 'success', 'data': data})
-    try:
+    if getattr(request, 'mysql_conn'):
         request.mysql_conn.commit()
-    except:
-        raise
     return Response(res, mimetype='application/json')
 
 
 def return_error(code, msg, data=None):
-    try:
+    if getattr(request, 'mysql_conn'):
         request.mysql_conn.rollback()
-    except:
-        raise
     res = json.dumps({'code': code, 'msg': msg, 'data': data if data else {}})
     return Response(res, mimetype='application/json')

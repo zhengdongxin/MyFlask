@@ -10,10 +10,13 @@ TABLES = [
         'fields': [
             {
                 'column_name': 'create_time',
-                'type': 'DATETIME'
+                'type': 'DATETIME',
+                'is_index': True
             },{
                 'column_name': 'last_modify_time',
                 'type': 'DATETIME',
+                'is_not_null': False,
+                'is_index': True
             },{
                 'column_name': 'title',
                 'type': 'varchar(100)',
@@ -25,6 +28,7 @@ TABLES = [
             },{
                 'column_name': 'price',
                 'type': 'BIGINT',
+                'is_index': True,
                 'default': 0
             },{
                 'column_name': 'state',
@@ -37,17 +41,26 @@ TABLES = [
         'fields': [
             {
                 'column_name': 'create_time',
-                'type': 'DATETIME'
+                'type': 'DATETIME',
+                'is_index': True
             },{
                 'column_name': 'last_modify_time',
                 'type': 'DATETIME',
+                'is_index': True
             },{
-                'column_name': 'account_id',
+                'column_name': 'order_no',
+                'type': 'varchar(100)',
+                'is_unique': True,
+                'default': ''
+            },{
+                'column_name': 'account_i',
                 'type': 'BIGINT',
+                'is_index': True,
                 'default': 0
             },{
-                'column_name': 'product_id',
+                'column_name': 'product_i',
                 'type': 'BIGINT',
+                'is_index': True,
                 'default': 0
             },{
                 'column_name': 'product_title',
@@ -64,6 +77,7 @@ TABLES = [
             },{
                 'column_name': 'amount',
                 'type': 'BIGINT',
+                'is_index': True,
                 'default': 0
             },{
                 'column_name': 'state',
@@ -76,9 +90,11 @@ TABLES = [
         'fields': [
             {
                 'column_name': 'create_time',
+                'is_index': True,
                 'type': 'DATETIME'
             },{
                 'column_name': 'last_modify_time',
+                'is_index': True,
                 'type': 'DATETIME',
             },{
                 'column_name': 'name',
